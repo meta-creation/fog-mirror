@@ -1,0 +1,832 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Breath on Glass</title>
+<style>
+:root{
+  --bg:#0a1519;
+  --bg2:#14292f;
+  --ink:#e9f2f1;
+  --dim:#9db4b5;
+  --amber:#ffcf8b;
+  --amber2:#f2a65a;
+  --line:rgba(255,255,255,.14);
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;overflow:hidden;
+}
+.serif{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif}
+
+/* ───────── start screen: a tiled bathroom wall with a vanity mirror ───────── */
+#start{
+  position:fixed;inset:0;overflow:auto;
+  background:
+    linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px) 0 0/64px 64px,
+    linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px) 0 0/64px 64px,
+    radial-gradient(120% 90% at 70% 30%,var(--bg2),var(--bg) 70%);
+}
+.steam{position:absolute;border-radius:50%;filter:blur(60px);opacity:.5;pointer-events:none;
+  background:radial-gradient(closest-side,rgba(220,238,238,.28),transparent);
+  animation:drift 22s ease-in-out infinite alternate}
+.steam.a{width:60vmax;height:60vmax;left:-15vmax;top:-20vmax}
+.steam.b{width:50vmax;height:50vmax;right:-10vmax;bottom:-20vmax;animation-duration:28s;animation-delay:-9s}
+@keyframes drift{to{transform:translate(8vmax,5vmax) scale(1.15)}}
+
+.hero{
+  position:relative;min-height:100%;
+  max-width:1120px;margin:0 auto;padding:clamp(24px,5vw,64px) clamp(20px,5vw,48px);
+  display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(24px,5vw,72px);align-items:center;
+}
+.eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin:0 0 18px}
+h1{font-weight:500;font-size:clamp(46px,8vw,104px);line-height:.95;letter-spacing:-.02em;margin:0 0 18px}
+h1 em{font-style:italic;color:var(--amber)}
+.lede{font-size:clamp(16px,1.6vw,19px);line-height:1.55;color:#c9d9d9;max-width:34ch;margin:0 0 26px}
+.privacy{
+  display:flex;gap:12px;align-items:flex-start;max-width:44ch;
+  padding:14px 16px;border:1px solid var(--line);border-radius:14px;
+  background:rgba(255,255,255,.04);font-size:14px;line-height:1.5;color:#cfe0df;margin:0 0 28px;
+}
+.privacy svg{flex:none;margin-top:2px}
+.privacy b{color:#fff;font-weight:600}
+#go{
+  appearance:none;border:0;cursor:pointer;
+  font:600 17px/1 system-ui,sans-serif;color:#2a1a05;
+  padding:18px 30px;border-radius:999px;
+  background:linear-gradient(180deg,var(--amber),var(--amber2));
+  box-shadow:0 10px 30px rgba(242,166,90,.28),inset 0 1px 0 rgba(255,255,255,.5);
+  transition:transform .15s,box-shadow .15s,opacity .15s;
+}
+#go:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 14px 36px rgba(242,166,90,.4),inset 0 1px 0 rgba(255,255,255,.5)}
+#go:focus-visible{outline:3px solid #fff;outline-offset:3px}
+#go:disabled{opacity:.65;cursor:progress}
+#err{min-height:1.4em;margin:14px 0 0;color:#ffb4a8;font-size:14px;line-height:1.5;max-width:46ch}
+#note{margin:8px 0 0;color:var(--dim);font-size:13px;max-width:46ch}
+
+/* the vanity mirror */
+.vanity{justify-self:center;width:min(100%,380px)}
+.mirror{
+  position:relative;aspect-ratio:3/4;border-radius:50%;
+  padding:12px;
+  background:linear-gradient(145deg,#f4f7f7,#8a9a9d 40%,#dfe8e8 60%,#6f7f82);
+  box-shadow:0 0 0 2px rgba(255,255,255,.2),0 30px 80px rgba(0,0,0,.55),0 0 90px rgba(255,214,150,.18);
+}
+.mirror svg{display:block;width:100%;height:100%;border-radius:50%}
+.bulbs{position:absolute;inset:-22px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,#fff6dc 0 3px,transparent 4px) 0 0/auto;
+  -webkit-mask:none;mask:none}
+.caption{margin:16px 0 0;text-align:center;font-size:13px;color:var(--dim);letter-spacing:.04em}
+.w1{stroke-dasharray:1;stroke-dashoffset:1;animation:wipeEyes 10s infinite}
+.w2{stroke-dasharray:1;stroke-dashoffset:1;animation:wipeSmile 10s infinite}
+@keyframes wipeEyes{0%,6%{stroke-dashoffset:1;opacity:1}14%,86%{stroke-dashoffset:0;opacity:1}97%,100%{stroke-dashoffset:0;opacity:0}}
+@keyframes wipeSmile{0%,16%{stroke-dashoffset:1;opacity:1}40%,86%{stroke-dashoffset:0;opacity:1}97%,100%{stroke-dashoffset:0;opacity:0}}
+.drop{animation:drip 7s ease-in infinite;opacity:0}
+.drop:nth-of-type(2){animation-delay:-2.5s}
+.drop:nth-of-type(3){animation-delay:-5s}
+@keyframes drip{0%{transform:translateY(0);opacity:0}10%{opacity:.8}90%{opacity:.5}100%{transform:translateY(250px);opacity:0}}
+
+/* gestures + keys */
+.how{
+  grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:8px 0 0;padding:0;list-style:none;
+}
+.how li{padding:16px 18px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.04);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.how h3{margin:0 0 6px;font-size:15px;font-weight:600;color:#fff}
+.how h3 span{color:var(--amber);font-family:ui-monospace,Menlo,monospace;font-size:12px;margin-right:8px}
+.how p{margin:0;font-size:13.5px;line-height:1.5;color:var(--dim)}
+.keys{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;justify-content:center;color:var(--dim);font-size:13px}
+.keys span{display:inline-flex;gap:8px;align-items:center}
+kbd{font:600 12px ui-monospace,Menlo,monospace;color:var(--ink);padding:3px 8px;border-radius:6px;border:1px solid rgba(255,255,255,.28);border-bottom-width:2px;background:rgba(255,255,255,.06)}
+
+@media (max-width:820px){
+  body{overflow:auto}
+  .hero{grid-template-columns:1fr}
+  .vanity{order:-1;width:min(70%,300px)}
+  .how{grid-template-columns:1fr}
+}
+
+/* ───────── the mirror itself ───────── */
+#stage{position:fixed;inset:0;background:#000;display:none}
+#view{position:absolute;inset:0;width:100%;height:100%;display:block}
+#cam{position:fixed;left:0;top:0;width:2px;height:2px;opacity:0;pointer-events:none}
+.brush{
+  position:fixed;left:16px;bottom:16px;z-index:5;
+  display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:999px;
+  background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  color:#fff;font:500 13px system-ui,sans-serif;
+}
+.brush label{text-transform:lowercase}
+.brush input{width:110px;accent-color:#fff;margin:0}
+.shutter{
+  position:fixed;right:16px;bottom:16px;z-index:5;width:54px;height:54px;border-radius:50%;
+  display:grid;place-items:center;cursor:pointer;color:#fff;padding:0;
+  background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  transition:transform .12s,background .12s;
+}
+.shutter:hover{background:rgba(255,255,255,.24)}
+.shutter:active{transform:scale(.92)}
+.hint{
+  position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:5;
+  padding:8px 16px;border-radius:999px;font:500 13px system-ui,sans-serif;color:#fff;white-space:nowrap;
+  background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.2);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  transition:opacity 1.2s;pointer-events:none;
+}
+.hint.gone{opacity:0}
+#hud{
+  position:fixed;left:16px;top:16px;z-index:5;display:none;margin:0;
+  padding:10px 12px;border-radius:10px;background:rgba(0,0,0,.55);color:#cfe;
+  font:12px/1.5 ui-monospace,Menlo,monospace;white-space:pre;pointer-events:none;
+}
+#flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:9;transition:opacity .35s}
+#flash.on{opacity:.8;transition:none}
+#fatal{
+  position:fixed;left:50%;bottom:84px;transform:translateX(-50%);z-index:10;display:none;max-width:min(90vw,640px);
+  padding:12px 16px;border-radius:12px;background:#5a1d17;color:#ffd9d3;font:13px/1.45 ui-monospace,Menlo,monospace;
+}
+@media (prefers-reduced-motion:reduce){.steam,.w1,.w2,.drop{animation:none}.w1,.w2{stroke-dashoffset:0}}
+</style>
+<!-- Pinned MediaPipe builds. Unpinned versions pull a broken build. -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<!-- ═════════ START SCREEN ═════════ -->
+<main id="start">
+  <div class="steam a"></div><div class="steam b"></div>
+  <div class="hero">
+    <section>
+      <p class="eyebrow">a bathroom mirror for your webcam</p>
+      <h1 class="serif">Breath<br>on <em>Glass</em></h1>
+      <p class="lede">Fog up your own reflection, then write in it with a fingertip.</p>
+
+      <p class="privacy">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffcf8b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        <span><b>Nothing is uploaded.</b> Your camera and microphone are processed right here in this browser tab. No frames, audio, or data ever leave your machine.</span>
+      </p>
+
+      <button id="go" type="button">Step up to the mirror &rarr;</button>
+      <p id="err" role="alert"></p>
+      <p id="note"></p>
+    </section>
+
+    <aside class="vanity" aria-hidden="true">
+      <div class="mirror">
+        <svg viewBox="0 0 300 400">
+          <defs>
+            <linearGradient id="room" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#f6d8b4"/><stop offset="1" stop-color="#3d6a72"/>
+            </linearGradient>
+            <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#f2c6a3"/><stop offset="1" stop-color="#d9a07c"/>
+            </linearGradient>
+            <filter id="frost" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="9"/></filter>
+            <!-- the same trick the real app uses: frost is masked, and wiping subtracts from the mask -->
+            <mask id="fogmask" maskUnits="userSpaceOnUse" x="0" y="0" width="300" height="400">
+              <rect width="300" height="400" fill="#fff" fill-opacity=".92"/>
+              <g stroke="#000" stroke-linecap="round" stroke-linejoin="round" fill="none">
+                <path class="w1" pathLength="1" stroke-width="22" d="M112 150 L124 153 M176 153 L188 150"/>
+                <path class="w2" pathLength="1" stroke-width="20" d="M104 208 Q150 262 196 208"/>
+              </g>
+            </mask>
+            <g id="scene">
+              <rect width="300" height="400" fill="url(#room)"/>
+              <path d="M10 400 C20 320 80 292 150 292 C220 292 280 320 290 400Z" fill="#2c4a52"/>
+              <rect x="132" y="250" width="36" height="50" rx="14" fill="#d9a07c"/>
+              <ellipse cx="150" cy="170" rx="70" ry="88" fill="url(#skin)"/>
+              <path d="M78 160 C74 70 226 70 222 160 C210 112 90 112 78 160Z" fill="#3b2a24"/>
+              <circle cx="122" cy="156" r="6" fill="#2a1a14"/><circle cx="178" cy="156" r="6" fill="#2a1a14"/>
+              <path d="M110 208 Q150 252 190 208" stroke="#a24b3c" stroke-width="7" stroke-linecap="round" fill="none"/>
+            </g>
+          </defs>
+          <use href="#scene"/>
+          <g mask="url(#fogmask)">
+            <use href="#scene" filter="url(#frost)"/>
+            <rect width="300" height="400" fill="rgb(242,238,231)" fill-opacity=".62"/>
+          </g>
+          <g fill="#fff" fill-opacity=".75">
+            <circle class="drop" cx="62" cy="70" r="3.2"/>
+            <circle class="drop" cx="238" cy="40" r="2.6"/>
+            <circle class="drop" cx="150" cy="30" r="3"/>
+          </g>
+        </svg>
+      </div>
+      <p class="caption">breathe &middot; pinch &middot; wipe</p>
+    </aside>
+
+    <ul class="how">
+      <li><h3><span>01</span>Breathe</h3><p>Blow softly at your laptop. Fog blooms right where your breath lands.</p></li>
+      <li><h3><span>02</span>Pinch</h3><p>Touch thumb and index finger together and draw. The fog wipes away and your face shows through.</p></li>
+      <li><h3><span>03</span>Fist</h3><p>Close your hand and swipe to clear a wide patch, like using your sleeve.</p></li>
+    </ul>
+    <div class="keys">
+      <span><kbd>space</kbd> hold to fog</span>
+      <span><kbd>C</kbd> clear drawing</span>
+<span><kbd>G</kbd> glow on/off</span>
+      <span><kbd>S</kbd> save photo</span>
+      <span><kbd>D</kbd> readouts</span>
+      <span><kbd>esc</kbd> back here</span>
+    </div>
+  </div>
+</main>
+
+<!-- ═════════ THE MIRROR ═════════ -->
+<div id="stage">
+  <canvas id="view"></canvas>
+  <video id="cam" playsinline muted></video>
+  <div class="hint" id="hint">pinch to draw &middot; fist to wipe &middot; breathe or hold space to fog</div>
+  <pre id="hud"></pre>
+  <div class="brush"><label for="brush">brush</label><input id="brush" type="range" min="7" max="38" value="15" step="1"><label for="glow" style="margin-left:8px" title="seconds the glow lasts">glow</label><input id="glow" type="range" min="1" max="12" value="5" step="1"></div>
+  <button class="shutter" id="shutter" type="button" aria-label="Save photo" title="Save photo (S)">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-2.5h6L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.6"/></svg>
+  </button>
+</div>
+<div id="flash"></div>
+<div id="fatal"></div>
+
+<script>
+'use strict';
+
+/* ════════ Tuned values ════════ */
+const CFG = {
+  // fog + breath
+  fogStart: 0.55,
+  blur: 18, bright: 1.18, tint: '242,238,231', white: 0.62,
+  blobs: 12, blobEvery: 2, spreadX: 1.45, blobBlur: 0.60, reach: 0.43, blobAlpha: 0.36, below: 0.05,
+  faceEvery: 5, faceEase: 0.4,
+  // breath detection
+  thrOn: 0.0025, thrFull: 0.003, floorDown: 0.05, floorUp: 0.0008, keyIgnoreMs: 300, warmFrames: 45,
+  // drawing
+  ease1: 0.45, ease2: 0.22, tremor: 0.0006, releaseMs: 250, releaseFrames: 2, starEase: 0.55,
+  pinchDown: 0.22, pinchUp: 0.38,
+  // glow: glowHue = null for rainbow (each stroke a new colour) or 0-360 for one fixed colour
+  glowHue: null, glowHoldFrac: 0.6, glowFlicker: 0.08,
+  // fist wipe
+  wipeMul: 1.6, wipeAlpha: 0.34, maxStamps: 40, jump: 0.30,
+};
+const HANDS_URL = 'https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/';
+const FACE_URL  = 'https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/';
+const TAU = Math.PI * 2;
+
+/* ════════ Elements & canvases ════════ */
+const $ = id => document.getElementById(id);
+const startEl = $('start'), stageEl = $('stage'), view = $('view'), video = $('cam');
+const goBtn = $('go'), errEl = $('err'), noteEl = $('note');
+const glowEl = $('glow'), brushEl = $('brush'), hintEl = $('hint'), hudEl = $('hud'), fatalEl = $('fatal');
+const vctx = view.getContext('2d');
+
+const fogC   = document.createElement('canvas');  // alpha mask: how much fog at each pixel (never shown directly)
+const fctx   = fogC.getContext('2d');
+const frostC = document.createElement('canvas');  // blurred camera, masked by the fog canvas
+const fr     = frostC.getContext('2d');
+const smallC = document.createElement('canvas');  // low-res camera used to make the blur cheap
+const sm     = smallC.getContext('2d');
+const hasFilter = 'filter' in CanvasRenderingContext2D.prototype;  // Safari lacks ctx.filter
+
+let dpr = 1, W = 0, H = 0, bs = 0.25, fogReady = false;
+
+/* ════════ State ════════ */
+let running = false, rafId = 0, busy = false, sent = 0, frameN = 0;
+let stream = null, audioCtx = null, analyser = null, micBuf = null;
+let hands = null, faces = null;
+let lastKey = -1e9, spaceDown = false, showHud = false, saveReq = false;
+let lastT = 0, fps = 0;
+
+const mic  = { level: 0, floor: null, strength: 0, warm: 0 };
+const fogCenter = { x: 0, y: 0 }, mouth = { x: 0, y: 0 };
+const hand = { pts: null, t: 0, ratio: 9, pinch: false, fist: false, fistFrames: 0, indexExt: false };
+const pen  = { down: false, raw: null, brush: null, last: null, mid0: null, relCount: 0, relSince: 0 };
+const star = { x: 0, y: 0, on: false };
+const glowC = document.createElement('canvas'); // half-res canvas the glowing strokes are drawn on
+const gl = glowC.getContext('2d');
+const strokes = []; let curStroke = null, glowOn = true;
+const wipe = { raw: null, last: null, active: false, r: 0 };
+
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const rnd = Math.random;
+
+/* ════════ Sizing (everything in device pixels, dpr capped at 2) ════════ */
+function resize() {
+  dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const nw = Math.max(2, Math.round(innerWidth * dpr));
+  const nh = Math.max(2, Math.round(innerHeight * dpr));
+  if (nw === W && nh === H) return;
+
+  let keep = null;
+  if (fogReady) { keep = document.createElement('canvas'); keep.width = fogC.width; keep.height = fogC.height; keep.getContext('2d').drawImage(fogC, 0, 0); }
+
+  W = nw; H = nh;
+  view.width = W; view.height = H;
+  frostC.width = W; frostC.height = H;
+  bs = hasFilter ? 0.25 : 0.08;
+  smallC.width = Math.max(2, Math.ceil(W * bs)); smallC.height = Math.max(2, Math.ceil(H * bs));
+  fogC.width = W; fogC.height = H;
+  glowC.width = Math.ceil(W * 0.5); glowC.height = Math.ceil(H * 0.5);
+  if (keep) fctx.drawImage(keep, 0, 0, W, H); else resetFog();
+  fogReady = true;
+  fogCenter.x = mouth.x = W / 2; fogCenter.y = mouth.y = H * 0.5;
+}
+function resetFog() {
+  fctx.globalCompositeOperation = 'source-over';
+  fctx.clearRect(0, 0, W, H);
+  fctx.fillStyle = `rgba(255,255,255,${CFG.fogStart})`;
+  fctx.fillRect(0, 0, W, H);
+}
+
+/* Video is drawn "cover" style; landmarks must go through the same mapping. */
+function cover() {
+  const vw = video.videoWidth, vh = video.videoHeight;
+  const s = Math.max(W / vw, H / vh);
+  return { s, dw: vw * s, dh: vh * s, ox: (W - vw * s) / 2, oy: (H - vh * s) / 2 };
+}
+const mapPt = (m, l) => ({ x: W - (m.ox + l.x * m.dw), y: m.oy + l.y * m.dh });  // x is mirrored
+
+function drawVideoMirrored(ctx, w, h, pad) {
+  const s = Math.max(w / video.videoWidth, h / video.videoHeight) * pad;
+  const dw = video.videoWidth * s, dh = video.videoHeight * s;
+  ctx.save();
+  ctx.translate(w, 0); ctx.scale(-1, 1);
+  ctx.drawImage(video, (w - dw) / 2, (h - dh) / 2, dw, dh);
+  ctx.restore();
+}
+
+/* ════════ MediaPipe results ════════ */
+function onHands(res) {
+  const lm = res.multiHandLandmarks && res.multiHandLandmarks[0];
+  if (!lm) { hand.pts = null; hand.fistFrames = 0; return; }
+  const m = cover();
+  const p = lm.map(l => mapPt(m, l));
+  const d = (a, b) => Math.hypot(p[a].x - p[b].x, p[a].y - p[b].y);
+
+  const size = d(0, 9);                                  // wrist -> middle knuckle
+  hand.ratio = d(4, 8) / size;                           // pinch measured relative to hand size
+  if (hand.ratio < CFG.pinchDown) hand.pinch = true;
+  else if (hand.ratio > CFG.pinchUp) hand.pinch = false; // in between: hold state
+
+  hand.fist = [[8, 6], [12, 10], [16, 14], [20, 18]].every(([tip, mid]) => d(tip, 0) < d(mid, 0));
+  hand.fistFrames = hand.fist ? hand.fistFrames + 1 : 0;
+  hand.indexExt = d(8, 0) > d(6, 0);
+  hand.width = Math.max(d(5, 17), d(0, 9));              // a side-on fist flattens knuckle width, so take the larger
+  hand.pts = p;
+  hand.t = performance.now();
+}
+function onFace(res) {
+  const det = res.detections && res.detections[0];
+  const k = det && (det.landmarks || det.keypoints);
+  if (!k || !k[3]) return;                               // index 3 = mouth centre
+  const p = mapPt(cover(), k[3]);
+  mouth.x = p.x; mouth.y = p.y;
+}
+
+/* One rAF loop feeds MediaPipe, and only when the previous call has resolved. */
+function kick() {
+  if (busy || video.readyState < 2) return;
+  busy = true;
+  (async () => {
+    await hands.send({ image: video });
+    if (++sent % CFG.faceEvery === 0) await faces.send({ image: video });
+  })().then(() => { busy = false; }, e => { busy = false; throw e; });
+}
+
+/* ════════ Breath ════════ */
+function readMic(now) {
+  if (!analyser) { mic.level = 0; mic.strength = 0; return; }
+  analyser.getFloatTimeDomainData(micBuf);
+  let sum = 0;
+  for (let i = 0; i < micBuf.length; i++) sum += micBuf[i] * micBuf[i];
+  const level = Math.sqrt(sum / micBuf.length);
+  mic.level = level;
+
+  if (mic.floor === null) mic.floor = level;
+  if (mic.warm < CFG.warmFrames) {                       // settle on the room's noise first
+    mic.warm++; mic.floor += (level - mic.floor) * 0.2; mic.strength = 0; return;
+  }
+  // the floor falls fast and rises very slowly, so breath never gets absorbed into it
+  if (level < mic.floor) mic.floor += (level - mic.floor) * CFG.floorDown;
+  else                   mic.floor += (level - mic.floor) * CFG.floorUp;
+
+  let s = clamp((level - mic.floor - CFG.thrOn) / (CFG.thrFull - CFG.thrOn), 0, 1);
+  if (now - lastKey < CFG.keyIgnoreMs) s = 0;            // typing must not fog the screen
+  mic.strength = s;
+}
+
+function breathBlobs(strength) {
+  const short = Math.min(W, H);
+  const R = CFG.reach * short;
+  const cx = fogCenter.x, cy = fogCenter.y + CFG.below * short;  // breath falls
+  fctx.globalCompositeOperation = 'source-over';
+  for (let i = 0; i < CFG.blobs; i++) {
+    const a = rnd() * TAU, d = Math.sqrt(rnd()) * R * 0.85;
+    const x = cx + Math.cos(a) * d * CFG.spreadX;                // breath drifts sideways
+    const y = cy + Math.sin(a) * d;
+    const r = R * (0.3 + 0.25 * rnd());
+    const g = fctx.createRadialGradient(x, y, 0, x, y, r);
+    const al = CFG.blobAlpha * strength;
+    g.addColorStop(0, `rgba(255,255,255,${al})`);
+    g.addColorStop(1 - CFG.blobBlur, `rgba(255,255,255,${al})`);
+    g.addColorStop(1, 'rgba(255,255,255,0)');
+    fctx.fillStyle = g;
+    fctx.fillRect(x - r, y - r, r * 2, r * 2);
+  }
+}
+
+/* ════════ Erasing: always subtract from the fog (destination-out) ════════ */
+function stamp(x, y, r) {
+  const g = fctx.createRadialGradient(x, y, 0, x, y, r);
+  g.addColorStop(0, `rgba(0,0,0,${CFG.wipeAlpha})`);
+  g.addColorStop(0.55, `rgba(0,0,0,${CFG.wipeAlpha * 0.6})`);
+  g.addColorStop(1, 'rgba(0,0,0,0)');
+  fctx.globalCompositeOperation = 'destination-out';
+  fctx.fillStyle = g;
+  fctx.fillRect(x - r, y - r, r * 2, r * 2);
+  fctx.globalCompositeOperation = 'source-over';
+}
+const brushR = () => +brushEl.value * dpr;
+function penDot(x, y) {
+  fctx.globalCompositeOperation = 'destination-out';
+  fctx.fillStyle = '#000';
+  fctx.beginPath(); fctx.arc(x, y, brushR(), 0, TAU); fctx.fill();
+  fctx.globalCompositeOperation = 'source-over';
+}
+function penCurve(x0, y0, cx, cy, x1, y1) {
+  fctx.globalCompositeOperation = 'destination-out';
+  fctx.strokeStyle = '#000';
+  fctx.lineWidth = brushR() * 2; fctx.lineCap = 'round'; fctx.lineJoin = 'round';
+  fctx.beginPath(); fctx.moveTo(x0, y0); fctx.quadraticCurveTo(cx, cy, x1, y1); fctx.stroke();
+  fctx.globalCompositeOperation = 'source-over';
+}
+
+/* ════════ Glow: every stroke you draw shines, holds, then fades ════════ */
+function startStroke(x, y) {
+  if (!glowOn) { curStroke = null; return; }
+  const hue = CFG.glowHue == null ? (performance.now() / 25) % 360 : CFG.glowHue;
+  curStroke = { sx: x, sy: y, segs: [], end: null, hue, w: brushR() };
+  strokes.push(curStroke);
+}
+function addSeg(cx, cy, x, y) { if (curStroke) curStroke.segs.push(cx, cy, x, y); }
+function endStroke(now) { if (curStroke) { curStroke.end = now; curStroke = null; } }
+
+function drawGlow(now) {
+  if (!strokes.length) return;
+  const D = +glowEl.value * 1000, hold = D * CFG.glowHoldFrac, fade = D - hold;
+  gl.setTransform(1, 0, 0, 1, 0, 0);
+  gl.clearRect(0, 0, glowC.width, glowC.height);
+  gl.setTransform(0.5, 0, 0, 0.5, 0, 0);
+  gl.lineCap = 'round'; gl.lineJoin = 'round';
+  gl.globalCompositeOperation = 'lighter';
+  const pulse = 1 - CFG.glowFlicker * (0.5 + 0.5 * Math.sin(now / 110));
+  for (let i = strokes.length - 1; i >= 0; i--) {
+    const s = strokes[i];
+    let a = 1; // a stroke at full glow while you draw it; the countdown starts when the pen lifts
+    if (s.end !== null) {
+      const age = now - s.end;
+      if (age > D) { strokes.splice(i, 1); continue; }
+      if (age > hold) { const f = (age - hold) / fade; a = 1 - f * f * (3 - 2 * f); }
+    }
+    const path = new Path2D();
+    path.moveTo(s.sx, s.sy);
+    for (let k = 0; k < s.segs.length; k += 4) path.quadraticCurveTo(s.segs[k], s.segs[k + 1], s.segs[k + 2], s.segs[k + 3]);
+    if (!s.segs.length) path.lineTo(s.sx + 0.01, s.sy); // single tap = a glowing dot
+    gl.globalAlpha = a * pulse;
+    const h = s.hue;
+    const layers = [
+      [s.w * 2 + 30 * dpr, `hsla(${h},100%,55%,.22)`],   // wide halo
+      [s.w * 2 + 12 * dpr, `hsla(${h},100%,62%,.40)`],   // inner glow
+      [Math.max(2 * dpr, s.w * 0.7), `hsla(${h},100%,92%,.95)`], // white-hot core
+    ];
+    for (const [lw, c] of layers) { gl.lineWidth = lw; gl.strokeStyle = c; gl.stroke(path); }
+  }
+  gl.globalAlpha = 1; gl.globalCompositeOperation = 'source-over';
+  vctx.save();
+  vctx.globalCompositeOperation = 'lighter';
+  if (hasFilter) { vctx.filter = `blur(${9 * dpr}px)`; vctx.drawImage(glowC, 0, 0, W, H); vctx.filter = 'none'; }
+  vctx.drawImage(glowC, 0, 0, W, H);
+  vctx.restore();
+}
+
+function updateHand(now) {
+  const fresh = hand.pts && now - hand.t < 300;
+  const pinching = !!(fresh && hand.pinch);
+  const fist = !!(fresh && hand.fist && hand.fistFrames >= 2);
+
+  // target point for drawing = midpoint of thumb tip and index tip
+  let tx = 0, ty = 0;
+  if (fresh) { tx = (hand.pts[4].x + hand.pts[8].x) / 2; ty = (hand.pts[4].y + hand.pts[8].y) / 2; }
+
+  /* ── pen ── */
+  if (!pen.down) {
+    // index must be extended to start: a thumb resting on a curled finger in a fist is not a pinch
+    if (pinching && hand.indexExt && !fist) {
+      pen.down = true;
+      pen.raw = { x: tx, y: ty }; pen.brush = { x: tx, y: ty };
+      pen.last = { x: tx, y: ty }; pen.mid0 = { x: tx, y: ty };
+      pen.relCount = 0; pen.relSince = 0;
+      penDot(tx, ty); startStroke(tx, ty);
+    }
+  } else {
+    if (pinching) {
+      pen.relCount = 0; pen.relSince = 0;
+      pen.raw.x += (tx - pen.raw.x) * CFG.ease1;         // smooth pass one
+      pen.raw.y += (ty - pen.raw.y) * CFG.ease1;
+    } else {
+      // a hand that vanishes for one frame must not lift the pen
+      pen.relCount++;
+      if (!pen.relSince) pen.relSince = now;
+      if (pen.relCount >= CFG.releaseFrames && now - pen.relSince >= CFG.releaseMs) {
+        penCurve(pen.mid0.x, pen.mid0.y, pen.last.x, pen.last.y, pen.last.x, pen.last.y); addSeg(pen.last.x, pen.last.y, pen.last.x, pen.last.y); endStroke(now);
+        pen.down = false;
+      }
+    }
+    if (pen.down) {
+      pen.brush.x += (pen.raw.x - pen.brush.x) * CFG.ease2; // smooth pass two
+      pen.brush.y += (pen.raw.y - pen.brush.y) * CFG.ease2;
+      const moved = Math.hypot(pen.brush.x - pen.last.x, pen.brush.y - pen.last.y);
+      if (moved > CFG.tremor * W) {
+        const m1 = { x: (pen.last.x + pen.brush.x) / 2, y: (pen.last.y + pen.brush.y) / 2 };
+        penCurve(pen.mid0.x, pen.mid0.y, pen.last.x, pen.last.y, m1.x, m1.y); addSeg(pen.last.x, pen.last.y, m1.x, m1.y);  // through midpoints, no corners
+        pen.mid0 = m1; pen.last = { x: pen.brush.x, y: pen.brush.y };
+      }
+    }
+  }
+
+  /* ── star on the pinch point ── */
+  const showStar = fresh && (pinching || pen.down);
+  if (showStar) {
+    if (!star.on) { star.x = tx; star.y = ty; }
+    star.x += (tx - star.x) * CFG.starEase;
+    star.y += (ty - star.y) * CFG.starEase;
+  }
+  star.on = showStar;
+
+  /* ── fist wipe ── */
+  wipe.active = false;
+  if (fist && !pen.down) {
+    const pts = hand.pts, ids = [0, 5, 9, 13, 17];
+    const px = ids.reduce((s, i) => s + pts[i].x, 0) / ids.length;
+    const py = ids.reduce((s, i) => s + pts[i].y, 0) / ids.length;
+    if (!wipe.raw) wipe.raw = { x: px, y: py };
+    wipe.raw.x += (px - wipe.raw.x) * CFG.ease1;
+    wipe.raw.y += (py - wipe.raw.y) * CFG.ease1;
+    wipe.r = CFG.wipeMul * hand.width;
+    wipe.active = true;
+
+    const p = wipe.raw;
+    if (!wipe.last) { stamp(p.x, p.y, wipe.r); wipe.last = { x: p.x, y: p.y }; }
+    else {
+      const dx = p.x - wipe.last.x, dy = p.y - wipe.last.y, dist = Math.hypot(dx, dy);
+      if (dist > CFG.jump * W) {                         // tracking glitch: stamp once, no long streak
+        stamp(p.x, p.y, wipe.r); wipe.last = { x: p.x, y: p.y };
+      } else {
+        const step = wipe.r / 2;                         // one stamp per half-radius travelled
+        const n = Math.min(CFG.maxStamps, Math.floor(dist / step));
+        for (let i = 1; i <= n; i++) {
+          const f = (i * step) / dist;
+          stamp(wipe.last.x + dx * f, wipe.last.y + dy * f, wipe.r);
+        }
+        if (n > 0) { const f = (n * step) / dist; wipe.last = { x: wipe.last.x + dx * f, y: wipe.last.y + dy * f }; }
+      }
+    }
+  } else { wipe.raw = null; wipe.last = null; }
+}
+
+/* ════════ Drawing a frame ════════ */
+function composite() {
+  // 1. camera, mirrored
+  vctx.globalCompositeOperation = 'source-over';
+  drawVideoMirrored(vctx, W, H, 1);
+
+  // 2+3. frost = blurred, brightened, tinted camera, masked by the fog canvas
+  const sw = smallC.width, sh = smallC.height;
+  sm.clearRect(0, 0, sw, sh);
+  sm.save();
+  if (hasFilter) sm.filter = `blur(${CFG.blur * dpr * bs}px) brightness(${CFG.bright})`;
+  drawVideoMirrored(sm, sw, sh, 1.1);                    // drawn a little oversize so blurred edges stay opaque
+  sm.restore();
+  if (!hasFilter) { sm.fillStyle = 'rgba(255,255,255,.1)'; sm.fillRect(0, 0, sw, sh); }
+  sm.fillStyle = `rgba(${CFG.tint},${CFG.white})`;       // blur alone doesn't read as fog; it needs a little white
+  sm.fillRect(0, 0, sw, sh);
+
+  fr.globalCompositeOperation = 'source-over';
+  fr.clearRect(0, 0, W, H);
+  fr.imageSmoothingEnabled = true; fr.imageSmoothingQuality = 'high';
+  fr.drawImage(smallC, 0, 0, W, H);
+  fr.globalCompositeOperation = 'destination-in';
+  fr.drawImage(fogC, 0, 0);
+  fr.globalCompositeOperation = 'source-over';
+  vctx.drawImage(frostC, 0, 0);
+  drawGlow(performance.now());
+
+  // snapshot now, before UI sparkles are drawn on top
+  if (saveReq) {
+    saveReq = false;
+    view.toBlob(b => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(b);
+      a.download = 'fog-mirror-' + new Date().toISOString().replace(/[:.]/g, '-') + '.png';
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    }, 'image/png');
+    const f = $('flash'); f.classList.add('on'); requestAnimationFrame(() => requestAnimationFrame(() => f.classList.remove('on')));
+  }
+
+  if (wipe.active) {                                     // faint ring showing the wipe size
+    vctx.strokeStyle = 'rgba(255,255,255,.35)'; vctx.lineWidth = 1.5 * dpr;
+    vctx.beginPath(); vctx.arc(wipe.raw.x, wipe.raw.y, wipe.r, 0, TAU); vctx.stroke();
+  }
+  if (star.on) drawStar(star.x, star.y);
+}
+function drawStar(x, y) {
+  const r = 8 * dpr;
+  vctx.save();
+  vctx.translate(x, y);
+  const g = vctx.createRadialGradient(0, 0, 0, 0, 0, r * 3);
+  g.addColorStop(0, 'rgba(255,240,200,.85)'); g.addColorStop(1, 'rgba(255,240,200,0)');
+  vctx.fillStyle = g; vctx.beginPath(); vctx.arc(0, 0, r * 3, 0, TAU); vctx.fill();
+  vctx.shadowColor = 'rgba(255,225,160,1)'; vctx.shadowBlur = 12 * dpr;
+  vctx.fillStyle = '#fff';
+  vctx.beginPath();
+  for (let i = 0; i < 8; i++) {
+    const rad = i % 2 ? r * 0.3 : r, a = i * Math.PI / 4 - Math.PI / 2;
+    vctx.lineTo(Math.cos(a) * rad, Math.sin(a) * rad);
+  }
+  vctx.closePath(); vctx.fill();
+  vctx.restore();
+}
+
+function frame(now) {
+  if (!running) return;
+  rafId = requestAnimationFrame(frame);
+  frameN++;
+  fps += ((1000 / Math.max(1, now - lastT)) - fps) * 0.1; lastT = now;
+
+  kick();
+  readMic(now);
+
+  // fog centre trails the mouth instead of snapping to it
+  fogCenter.x += (mouth.x - fogCenter.x) * CFG.faceEase;
+  fogCenter.y += (mouth.y - fogCenter.y) * CFG.faceEase;
+
+  updateHand(now);
+
+  // fog up from breath or Space, but never while someone is drawing or wiping
+  const strength = spaceDown ? 1 : mic.strength;
+  if (strength > 0 && !pen.down && !wipe.active && frameN % CFG.blobEvery === 0) breathBlobs(strength);
+
+  composite();
+  if (showHud) drawHud();
+}
+
+function drawHud() {
+  hudEl.textContent =
+    `fps      ${fps.toFixed(0)}\n` +
+    `mic      ${mic.level.toFixed(4)}${analyser ? '' : '  (no mic: hold space)'}\n` +
+    `floor    ${(mic.floor || 0).toFixed(4)}\n` +
+    `breath   ${mic.strength.toFixed(2)}${spaceDown ? '  (space)' : ''}\n` +
+    `hand     ${hand.pts ? 'yes' : 'no'}\n` +
+    `pinch    ${hand.ratio.toFixed(2)} ${hand.pinch ? 'DOWN' : 'up'}  pen ${pen.down ? 'ON' : 'off'}\n` +
+    `fist     ${hand.fist ? 'yes' : 'no'}  index ${hand.indexExt ? 'out' : 'curled'}\n` +
+    `dpr      ${dpr}  ${W}x${H}${hasFilter ? '' : '  (no ctx.filter)'}`;
+}
+
+/* ════════ Start / stop ════════ */
+const gum = c => navigator.mediaDevices.getUserMedia(c);
+
+async function begin() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    throw Object.assign(new Error('insecure'), { name: 'InsecureContext' });
+  }
+  if (!window.Hands || !window.FaceDetection) {
+    throw new Error('The hand-tracking library could not be downloaded. Check your internet connection and reload.');
+  }
+
+  const vid = { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' };
+  // The browser's noise suppression is built to delete the sound of breathing. Turn all three off.
+  const aud = { echoCancellation: false, noiseSuppression: false, autoGainControl: false };
+  let micOk = true;
+  try { stream = await gum({ video: vid, audio: aud }); }
+  catch (e) {
+    stream = await gum({ video: vid });                  // if this throws too, the camera is the problem
+    micOk = false;
+  }
+
+  video.srcObject = stream;
+  await video.play();
+  if (!video.videoWidth) await new Promise(r => video.addEventListener('loadedmetadata', r, { once: true }));
+
+  analyser = null;
+  if (micOk) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    await audioCtx.resume();
+    const src = audioCtx.createMediaStreamSource(new MediaStream(stream.getAudioTracks()));
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 2048;
+    src.connect(analyser);                               // not connected to speakers: no feedback
+    micBuf = new Float32Array(analyser.fftSize);
+  }
+
+  if (!hands) {
+    hands = new Hands({ locateFile: f => HANDS_URL + f });
+    hands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.6, minTrackingConfidence: 0.5 });
+    hands.onResults(onHands);
+    faces = new FaceDetection({ locateFile: f => FACE_URL + f });
+    faces.setOptions({ model: 'short', minDetectionConfidence: 0.5 });
+    faces.onResults(onFace);
+    await hands.initialize();
+    await faces.initialize();
+  }
+
+  startEl.style.display = 'none';
+  stageEl.style.display = 'block';
+  document.body.style.overflow = 'hidden';
+  resize();
+  mic.floor = null; mic.warm = 0; mic.strength = 0;
+  pen.down = false; wipe.raw = wipe.last = null; star.on = false; strokes.length = 0; curStroke = null;
+  hand.pts = null;
+  hintEl.classList.remove('gone');
+  hintEl.textContent = micOk
+    ? 'pinch to draw · fist to wipe · breathe or hold space to fog'
+    : 'microphone off — hold space to fog · pinch to draw · fist to wipe';
+  setTimeout(() => hintEl.classList.add('gone'), 7000);
+
+  running = true;
+  lastT = performance.now();
+  rafId = requestAnimationFrame(frame);
+}
+
+function stop() {
+  running = false;
+  cancelAnimationFrame(rafId);
+  if (stream) stream.getTracks().forEach(t => t.stop());
+  stream = null; video.srcObject = null;
+  if (audioCtx) audioCtx.close();
+  audioCtx = null; analyser = null;
+  spaceDown = false;
+  stageEl.style.display = 'none';
+  startEl.style.display = '';
+  if (innerWidth <= 820) document.body.style.overflow = 'auto';
+  goBtn.disabled = false;
+  goBtn.innerHTML = 'Step up to the mirror &rarr;';
+}
+
+goBtn.addEventListener('click', async () => {
+  errEl.textContent = ''; noteEl.textContent = '';
+  goBtn.disabled = true; goBtn.textContent = 'Warming up the mirror…';
+  try { await begin(); }
+  catch (e) {
+    if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+    goBtn.disabled = false; goBtn.innerHTML = 'Step up to the mirror &rarr;';
+    const n = e && e.name;
+    if (n === 'InsecureContext') {
+      errEl.textContent = location.protocol === 'file:'
+        ? 'Browsers block the camera on files opened by double-click (file://). Serve this folder instead — see the README (python3 -m http.server) — and open http://localhost:8000/fog.html.'
+        : 'The camera only works on https or localhost. Open this page from one of those.';
+    } else if (n === 'NotAllowedError' || n === 'SecurityError') {
+      errEl.textContent = 'Camera access was refused. Allow the camera for this page in your browser’s address bar, then press the button again.';
+    } else if (n === 'NotFoundError' || n === 'OverconstrainedError') {
+      errEl.textContent = 'No camera was found. Plug one in or check that another app isn’t using it.';
+    } else if (n === 'NotReadableError') {
+      errEl.textContent = 'The camera is busy — another app or tab is using it. Close it and try again.';
+    } else {
+      errEl.textContent = 'Something went wrong: ' + (e && e.message ? e.message : e);
+      throw e;                                           // never swallow unexpected errors
+    }
+    console.warn(e);
+  }
+});
+
+/* ════════ Controls ════════ */
+addEventListener('keydown', e => {
+  lastKey = performance.now();                           // breath is ignored for 300ms after any key
+  if (!running) return;
+  if (e.code === 'Space') { e.preventDefault(); spaceDown = true; return; }
+  if (e.repeat) return;
+  const k = e.key.toLowerCase();
+  if (k === 's') saveReq = true;
+  else if (k === 'g') glowOn = !glowOn;
+  else if (k === 'c') { resetFog(); strokes.length = 0; curStroke = null; }
+  else if (k === 'd') { showHud = !showHud; hudEl.style.display = showHud ? 'block' : 'none'; }
+  else if (e.key === 'Escape') stop();
+});
+addEventListener('keyup', e => { if (e.code === 'Space') { e.preventDefault(); spaceDown = false; } });
+addEventListener('blur', () => { spaceDown = false; });
+$('shutter').addEventListener('click', e => { saveReq = true; e.currentTarget.blur(); });
+addEventListener('resize', () => { if (running) resize(); });
+
+/* Surface every error on screen (and in the console) instead of failing silently. */
+function showFatal(msg) { fatalEl.style.display = 'block'; fatalEl.textContent = msg; }
+addEventListener('error', e => showFatal('Error: ' + e.message));
+addEventListener('unhandledrejection', e => showFatal('Error: ' + (e.reason && e.reason.message || e.reason)));
+
+if (location.protocol === 'file:') {
+  noteEl.textContent = 'Heads up: this file was opened directly. The camera needs localhost or https — see the README.';
+}
+</script>
+</body>
+</html>
